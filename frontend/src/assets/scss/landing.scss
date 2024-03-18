@@ -1,0 +1,303 @@
+@font-face {
+    font-family: "AmpleSoftPro";
+    src: local("AmpleSoftPro"), url("../assets/fonts/FontsFree-Net-AmpleSoftPro.ttf") format("truetype");
+}
+
+.new-login {
+    font-family: "AmpleSoftPro", Helvetica, Arial;
+    height: 100vh;
+}
+
+.login-logo {
+    position: absolute;
+    top: 50px;
+    left: 98px;
+    width: 300px;
+}
+
+.back-image {
+    position: absolute;
+    bottom: 25px;
+    z-index: 0;
+    max-width: 100%;
+    height: auto;
+}
+
+.login-footer {
+    width: 100vw;
+    height: 40px;
+    background: #04415a;
+    position: absolute;
+    bottom: 0px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.link-button-container {
+    margin-left: 162px;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    z-index: 9999;
+}
+
+.link-button {
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.company-name {
+    margin-right: 178px;
+}
+
+.login-form {
+    min-width: 460px;
+    height: 400px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    .login-form-label-en {
+        font-size: 36px;
+        color: #0c154a;
+        width: 188px;
+        text-align: center;
+    }
+
+    .login-form-label-es {
+        font-size: 31px;
+        color: #0c154a;
+        width: 188px;
+        text-align: center;
+    }
+
+    .login-input {
+        margin-top: 38px;
+        width: calc(100% - 60px);
+        height: 60px;
+        border-radius: 10px;
+        background: #f9faff;
+        border: 1px solid #5364a0;
+        text-align: center;
+        font-family: "Poppins";
+        font-size: 18px;
+
+        &::placeholder {
+            color: #c6ccf0;
+        }
+    }
+
+    .login-input:focus {
+        // outline-color: #c6ccf0;
+        outline: none;
+    }
+}
+
+.login-btn {
+    font-family: "Poppins";
+    margin-top: 12px;
+    background: #0b567c;
+    border-radius: 10px;
+    padding: 10px 30px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    border: none;
+
+    &:disabled {
+        opacity: 0.8;
+    }
+}
+
+.go-to-dashboard-btn {
+    font-family: "Poppins";
+    background: #0b567c;
+    font-size: 16px;
+    color: white;
+}
+
+.go-to-dashboard-btn:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.go-to-dashboard-btn:active {
+    transform: translateY(2px);
+}
+
+.signup-label {
+    font-family: "Poppins";
+    margin-top: 39px;
+    font-size: 12px;
+    color: black;
+}
+
+.signup-btn {
+    font-family: "Poppins";
+    // background: #5358fb;
+    margin-top: 4px;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #5358fb;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.login-btn:active {
+    transform: translateY(2px);
+}
+
+.signup-btn:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+::v-deep .ivu-avatar-string {
+    line-height: 75px !important;
+    font-size: 33px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    font-size: 36px;
+    font-weight: bold;
+    text-transform: capitalize;
+    color: #0c154a;
+}
+
+.user-info {
+    color: #0c154a;
+    display: flex;
+    font-family: "Poppins";
+    font-size: 16px;
+
+    .user-info-label {
+        margin-right: 8px;
+    }
+}
+
+.btn-notyou {
+    color: black;
+    font-family: "Poppins";
+    font-size: 16px;
+    margin-top: 18px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.login-form-container {
+    margin: auto 172px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.intro-message {
+    font-size: 4vw;
+    color: #0c154a;
+    height: 400px;
+    margin-right: 50px;
+    margin-top: -50px;
+}
+
+@media (max-width: 1670px) {
+    .intro-message {
+        margin-bottom: 15px;
+        margin-right: 15px;
+        margin-top: 100px;
+        font-size: 3.5vw;
+    }
+}
+
+@media (max-width: 1250px) {
+    .login-form-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .intro-message {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .intro-message {
+        display: none;
+    }
+
+    .login-form-container {
+        margin: auto;
+    }
+
+    .login-form {
+        width: calc(100% - 60px);
+        min-width: auto;
+    }
+
+    .link-button-container {
+        margin-left: 20px;
+    }
+
+    .company-name {
+        margin-right: 20px;
+    }
+
+    .login-logo {
+        display: none;
+    }
+
+    .login-form-label {
+        font-size: 28px;
+    }
+
+    .login-input {
+        font-size: 16px;
+    }
+}
+
+.mobile-logo {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: 769px) {
+        display: none;
+    }
+}
+
+.mobile-heade-image {
+    position: absolute;
+    right: -20px;
+    top: -50px;
+
+    @media (min-width: 768px) {
+        display: none;
+    }
+}
+
+::v-deep .ivu-spin-dot {
+    background-color: #c6ccf0 !important;
+}
+
+.spin-icon-load {
+    animation: ani-demo-spin 1s linear infinite;
+}
+
+.loading-message {
+    color: #0c154a;
+    font-size: 18px;
+}
