@@ -9,20 +9,19 @@ const {
 } = require("@aws-sdk/client-connect");
 
 const CREDENTIALS = {
-  accessKeyId: "ASIA4IBUQXOU7Q3HFYOY",
-  secretAccessKey: "+w4uTZW2oE8n/VFmBEt8aAINHcs90iVAHeyQx5J2",
-  sessionToken:
-    "IQoJb3JpZ2luX2VjEGYaCXVzLWVhc3QtMSJHMEUCICijX5eN1aU5DH0tn8tbdvKSmVIcwEgrV2V8QHP9yGiFAiEAmw7bvYl+HPIUejbvEmJDy+dx555aw6d1CVGTvJiSHewqlQMIbhADGgw4NDE5MjM3Mzg1MzciDKLSScRd2pHbqp/tvyryAvw2q0PvNI1F4V9UJhDL3SVO9ugLNH3j5B6erDgeVZ/FZCS0+YatsqqAXgplXjuXXd6MaFePM6IBigu2Sz+CZTvC0seOkjxRCUlVHc17GrYbUy+RtxDl3py1EZ8umbI2/eCw5s/iRrEgvuo+qLHFkODhvHtdxA191vh0/WoyJfOtJXoeB4qK4fIJ3v2hgMrUw170RLS36vVc6aP6MpLER7H1aD/VIrGTLfLp2qfQjkBJwoU4LiN8fPnPG7hHOXOmxP+Q3vIfeaQiMDTxAYCDj9U0ZBDyZsZEJ+7cjw8KDWhUKzc9nsEt2VRlgLt3JIM/ASFRVqjvA/t8EbwZX5ABy2BBNGhLS6EmZRvPrW9145/Qo4z8hBYSIyDo5gjtbIN3gZA1YZhw2fbk1auW6l8pPATfCg7Zw5hBjnVZSmN10M9FemXrivvbp6E1ZGUVjNOM3jLEAE55qRj/RyTTKABI3L/CDqG5rYGO/NhlPFYWqt5Qyykwh5DKrwY6pgH0PHGriqEEJqITMSFSSNK8W3CvLzRXlchb2gUOdNd1Nyks3xmxUk1UomKNgzIoRhnUL5sZ/MG3lI675/z6YdRi1Io+gdOQFkOrnHBDGBwtXuXRRJBWE+KIR53r2f26zMwoZi+7VvHLpppZXGOkpgRcWI/WO6VDtjvaT2ntUcStX+tl9qkSHF7vkK/3V5qsi9+U0DoUeY74mcpTkcZWjH+guMyIDIuf",
+  accessKeyId: process.env.accessKeyId,
+  secretAccessKey: process.env.secretAccessKey,
+  sessionToken: process.env.sessionToken,
 };
 
-const REGION = "us-west-2";
+const REGION = process.env.REGION;
 
 const client = new ConnectClient({ region: REGION, credentials: CREDENTIALS });
 
 exports.handler = async (event, context, callback) => {
   try {
     // Parse the request body
-    console.log("EventLLL:::::: ", event);
+    console.log(event);
     let response = {};
     switch (event.resource) {
       case "/poc":
@@ -44,7 +43,11 @@ exports.handler = async (event, context, callback) => {
     callback(null, {
       statusCode: 200,
       body: JSON.stringify(response),
-      headers: { "Content-Type": "application/json" },
+       headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+        },
     });
   } catch (error) {
     // Return an error response if something goes wrong

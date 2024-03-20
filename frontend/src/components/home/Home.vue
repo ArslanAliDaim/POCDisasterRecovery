@@ -1,106 +1,29 @@
 <template>
-    <!-- <div>
-        <h1>Welcome to Home Page</h1>
-        <div>
-            <h1>Count: {{ count }}</h1>
-        </div>
-        <div>
-            <button @click="handleLogin" title="Login">Login</button>
-            <button @click="fetchData" class="ml-10">Fetch Data</button>
-        </div>
-    </div> -->
     <div>
-        <div class="logo-box">
-            <img class="login-logo" src="../../assets/dextr_logo.png" alt="App Logo" />
-        </div>
         <div class="session-part mt-10">
             <div class="content principal-text">
-                DEXTR FLEX is now CONNECTPATH
-            </div>
-            <div class="login-button">
-                Right
-            </div>
-        </div>
-
-        <!-- <div class="login-footer">
-            <div class="link-button-container">
-                <div v-for="(link, index) in links" :key="`link-${index}`" class="link-button"
-                    @click="navigateToLink(link.url)">
-                    {{ $t(`landing.links.${link.label}`) }}
-                </div>
+                <div>DEXTR FLEX is now CONNECTPATH</div>
                 <div>
-                    <Icon type="ios-globe-outline" class="icon-globe" />
-                </div>
-                <div class="selectLanguage">
-                    <Select :not-found-text="$t('common.noMatchingFound')" v-model="systemLanguage"
-                        class="vue-lang-input">
-                        <Option v-for="(value, index) in availableLanguages" :value="value.iso" :key="index">{{
-        $t(`availableLanguages.${value.name}`) }}</Option>
-                    </Select>
+                    The future of CX is here.
                 </div>
             </div>
-            <div class="company-name">© CloudHesive 2017-{{ new Date().getFullYear() }}</div>
+            <div class="login-form-container">
+                <div class="login-form">
+                    <div class="login-form-label-en">
+                        Sign in <br />
+                        To Continue
+                    </div>
+                    <input id="inputAlias" type="text" class="login-input" placeholder="Enter Your Instance Alias" />
+                    <button class="login-btn" @click="handleLogin" id="btnSecureLogin" ref="btnSecureLogin">
+                        Secure Login
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="login-form-container">
-            <div class="intro-message">
-                <div v-if="!partnerTemplate">
-                    <p class="principal-text">{{ $t("landing.dextrFlexIsNowConnectpath") }}</p>
-                    <p style="font-size: 0.8em">{{ $t("landing.theFutureOfCxIsHere") }}</p>
-                </div>
-                <div v-else>
-                    {{ $t("landing.theOmniChannelContactCenter") }}
-                    <span style="font-size: 0.8em">{{ $t("landing.poweredByAmazonConnect") }}</span>
-                </div>
-            </div>
-            <div class="login-form">
-                <div v-if="loading && !showLoginForm">
-                    <Spin size="large" fix>
-                        <Icon type="ios-loading" color="#0c154a" size="40" class="spin-icon-load"
-                            style="margin-bottom: 15px"></Icon>
-                        <div class="loading-message">{{ loadingMessage }}</div>
-                        <div class="sub-loading-message">{{ progressMessage }}</div>
-                    </Spin>
-                </div>
-                <NewLogin :instance-alias="instanceAlias" :loading="loading" @hideSpinner="hideSpinner"
-                    @connectLogin="setProgressMessage" @backtoLoginForm="backtoLoginForm" v-if="!showLoginForm" />
-                <template v-else>
-                    <div :class="$i18n.locale === 'en' ? 'login-form-label-en' : 'login-form-label-es'">
-                        {{ $t("landing.signIn") }} <br />
-                        {{ $t("landing.toContinue") }}
-                    </div>
-
-                    <div v-if="instanceData">
-                        <img v-if="adminLogoUrl" :src="adminLogoUrl" />
-                        <div class="user-info">
-                            <div class="user-info-label">{{ $t("landing.company") }}:</div>
-                            <div class="user-info-value">{{ instanceData.AdminCompany }}</div>
-                        </div>
-                        <div class="user-info">
-                            <div class="user-info-label">{{ $t("landing.instance") }}:</div>
-                            <div class="user-info-value">
-                                {{ instanceData.InstanceAlias }}
-                            </div>
-                        </div>
-                    </div>
-                    <input id="inputAlias" ref="inputAlias" type="text" class="login-input"
-                        :placeholder="$t('validationMessages.enterYourInstanceAlias')" v-model="instanceAlias"
-                        @keydown.enter="login" v-else />
-
-                    <button class="login-btn" @click="login" :disabled="loginProcessing" id="btnSecureLogin"
-                        ref="btnSecureLogin">
-                        {{ $t("landing.secureLogin") }}
-                    </button>
-                    <div class="signup-label">{{ $t("landing.dontHaveAccount") }}</div>
-                    <div class="signup-btn" @click="signup">
-                        {{ $t("landing.signUp") }}
-                    </div>
-                </template>
-            </div>
-        </div> -->
     </div>
 </template>
-  
+
 <script>
 import { mapActions, mapState } from 'vuex';
 export default {
@@ -152,7 +75,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .mt-10 {
     margin-top: 10px;
 }
@@ -161,40 +84,99 @@ export default {
     margin-left: 10px;
 }
 
-button {
-    width: 100px;
-    height: 30px;
-    size: 14px;
-    color: white;
-    font-weight: bold;
-    border-radius: 10px;
-    background-color: blue;
-    cursor: pointer;
-}
 .logo-box {
     width: 100%;
     height: 50px;
     text-align: left;
     margin-top: 0px;
 }
-.logo-box > img {
+
+.logo-box>img {
     width: 200px;
     height: 50px;
 }
+
 .session-part {
     display: flex;
     align-items: center;
     height: 80vh;
 }
+
 .session-part .content {
     width: 50%;
 }
+
 .session-part .login-button {
     width: 50%;
-    background-color: aqua;
 }
+
 .principal-text {
     line-height: 1em;
     margin-bottom: 20px;
+}
+
+.login-input {
+    margin-top: 38px;
+    width: calc(100% - 60px);
+    height: 60px;
+    border-radius: 10px;
+    background: #f9faff;
+    border: 1px solid #5364a0;
+    text-align: center;
+    font-family: "Poppins";
+    font-size: 18px;
+}
+
+.login-input:focus {
+    outline-color: #c6ccf0;
+    outline: none;
+}
+
+.login-form-container {
+    margin: auto 172px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.login-form {
+    min-width: 460px;
+    height: 400px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form-label-en {
+    font-size: 36px;
+    color: #0c154a;
+    text-align: center;
+}
+
+.login-btn {
+    font-family: "Poppins";
+    margin-top: 12px;
+    background: #0b567c;
+    border-radius: 10px;
+    padding: 10px 30px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+.login-btn:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.login-btn:active {
+    transform: translateY(2px);
 }
 </style>
