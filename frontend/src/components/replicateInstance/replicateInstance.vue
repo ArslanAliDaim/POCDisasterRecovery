@@ -1,25 +1,29 @@
 <!-- src/views/Login.vue -->
 <template>
   <div class="container">
-    <h1>Instance Details</h1>
-    <form @submit.prevent="submitForm" class="form">
-      <div class="form-group">
-        <label for="instanceId">Instance ID:</label>
-        <input type="text" id="instanceId" v-model="instanceId" class="form-control" required>
-        <span v-if="!isValidInstanceId" class="error-message">Please enter a valid Instance ID</span>
-      </div>
-      <div class="form-group">
-        <label for="replicaRegion">Replica Region:</label>
-        <input type="text" id="replicaRegion" v-model="replicaRegion" class="form-control" required>
-        <span v-if="!isValidReplicaRegion" class="error-message">Please enter a valid Replica Region</span>
-      </div>
-      <div class="form-group">
-        <label for="replicaAlias">Replica Alias:</label>
-        <input type="text" id="replicaAlias" v-model="replicaAlias" class="form-control" required>
-        <span v-if="!isValidReplicaAlias" class="error-message">Please enter a valid Replica Alias</span>
-      </div>
-      <button type="submit" class="btn">Submit</button>
-    </form>
+    <div v-if="isLoading">Loading...</div>
+    <div v-else>
+      <h1>Instance Details</h1>
+      <div v-if="message">{{ message }}</div>
+      <form @submit.prevent="submitForm" class="form">
+        <div class="form-group">
+          <label for="instanceId">Instance ID:</label>
+          <input type="text" id="instanceId" v-model="instanceId" class="form-control" required>
+          <span v-if="!isValidInstanceId" class="error-message">Please enter a valid Instance ID</span>
+        </div>
+        <div class="form-group">
+          <label for="replicaRegion">Replica Region:</label>
+          <input type="text" id="replicaRegion" v-model="replicaRegion" class="form-control" required>
+          <span v-if="!isValidReplicaRegion" class="error-message">Please enter a valid Replica Region</span>
+        </div>
+        <div class="form-group">
+          <label for="replicaAlias">Replica Alias:</label>
+          <input type="text" id="replicaAlias" v-model="replicaAlias" class="form-control" required>
+          <span v-if="!isValidReplicaAlias" class="error-message">Please enter a valid Replica Alias</span>
+        </div>
+        <button type="submit" class="btn">Submit</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -32,7 +36,9 @@ export default {
     return {
       instanceId: '',
       replicaRegion: '',
-      replicaAlias: ''
+      replicaAlias: '',
+      isLoading: false,
+      message: ''
     };
   },
   computed: {
@@ -51,20 +57,34 @@ export default {
   },
   methods: {
     ...mapActions(["replicateInstance"]),
+    initState() {
+      this.instanceId = '';
+      this.replicaRegion = '';
+      this.replicaAlias = '';
+    },
     async submitForm() {
-      if (this.isValidInstanceId && this.isValidReplicaRegion && this.isValidReplicaAlias) {
-        // Perform your form submission or other actions here
-        const payload = {
-          InstanceId: this.instanceId,
-          ReplicaRegion: this.replicaRegion,
-          ReplicaAlias: this.replicaAlias
+      try {
+        if (this.isValidInstanceId && this.isValidReplicaRegion && this.isValidReplicaAlias) {
+          this.isLoading = true;
+          const payload = {
+            InstanceId: this.instanceId,
+            ReplicaRegion: this.replicaRegion,
+            ReplicaAlias: this.replicaAlias
+          }
+          const response = await this.replicateInstance(payload);
+          if (response.$metadata?.httpStatusCode === 200) {
+            this.message = "Instance replicate!"
+            this.isLoading = false;
+            this.initState();
+            localStorage.setItem("InstanceId", response.Id)
+          }
+        } else {
+          console.log('Form validation failed');
         }
-        const response = await this.replicateInstance(payload);
-        if(response) {
-          localStorage.setItem("InstanceId", response.Id)
-        }
-      } else {
-        console.log('Form validation failed');
+      } catch (error) {
+        this.isLoading = false;
+        console.log(error)
+        return error;
       }
     }
   }

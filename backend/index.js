@@ -6,6 +6,7 @@ const {
   SearchAvailablePhoneNumbersCommand,
   ClaimPhoneNumberCommand,
   DescribeTrafficDistributionGroupCommand,
+  UpdateTrafficDistributionCommand,
 } = require("@aws-sdk/client-connect");
 
 const CREDENTIALS = {
@@ -25,7 +26,31 @@ exports.handler = async (event, context, callback) => {
     let response = {};
     switch (event.resource) {
       case "/poc":
-        response = await poc(event);
+        if (event.httpMethod === "POST") {
+          response = await replicateInstance(JSON.parse(event.body));
+        } else {
+          throw new Error(
+            `Unsupported route: “${event.resource}” with method "${event.httpMethod}`
+          );
+        }
+        break;
+      case "/poc/{id}":
+        if (event.httpMethod === "POST") {
+          response = await createTrafficDistributionGroup(
+            JSON.parse(event.body)
+          );
+        } else if (event.httpMethod === "GET") {
+          response = await getListTraficDistribution(event?.pathParameters?.id);
+        } else {
+          throw new Error(
+            `Unsupported route: “${event.resource}” with method "${event.httpMethod}"`
+          );
+        }
+        break;
+      case "/poc/group-details/{id}":
+        response = await describeTrafficDistributionGroup(
+          event?.pathParameters?.id
+        );
         break;
       case "/phone-number/available-phone-no":
         response = await availablePhoneNumber(event);
@@ -36,6 +61,9 @@ exports.handler = async (event, context, callback) => {
       case "/disaster":
         response = await disaster(event.body);
         break;
+      case "/phone-number/update-traffice-distribution-group":
+        response = await updateTrafficDistribution(JSON.parse(event.body));
+        break;
       default:
         throw new Error(`Unsupported route: “${event.resource}”`);
     }
@@ -43,11 +71,11 @@ exports.handler = async (event, context, callback) => {
     callback(null, {
       statusCode: 200,
       body: JSON.stringify(response),
-       headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
-        },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      },
     });
   } catch (error) {
     // Return an error response if something goes wrong
@@ -58,34 +86,6 @@ exports.handler = async (event, context, callback) => {
     };
   }
 };
-
-async function poc(event) {
-  try {
-    let response = {};
-    switch (event.httpMethod) {
-      case "GET":
-        // Id means Instance Id
-        if (event?.pathParameters?.id) {
-          response = await getListTraficDistribution(event?.pathParameters?.id);
-        }
-        break;
-      case "POST":
-        if (event?.pathParameters?.id) {
-          response = await createTrafficDistributionGroup(
-            JSON.parse(event.body)
-          );
-        } else {
-          response = await replicateInstance(JSON.parse(event.body));
-        }
-        break;
-      default:
-        throw new Error(`Unsupported route: “${event.httpMethod}”`);
-    }
-    return response;
-  } catch (error) {
-    throw error;
-  }
-}
 
 async function availablePhoneNumber(event) {
   try {
@@ -131,14 +131,15 @@ async function getListTraficDistribution(id) {
 
 async function replicateInstance(data) {
   if (data) {
+    console.log("Data:::: ", data);
     try {
-      //   const command = new ReplicateInstanceCommand(data);
-      //   const response = await client.send(command);
-      //   return response;
-      return {
-        arn: "data",
-        Id: data.InstanceId,
-      };
+      const command = new ReplicateInstanceCommand(data);
+      const response = await client.send(command);
+      return response;
+      // return {
+      //   arn: "data",
+      //   Id: data.InstanceId,
+      // };
     } catch (error) {
       console.log("Error during replicate Instance", error);
       throw error;
@@ -153,7 +154,7 @@ async function createTrafficDistributionGroup(data) {
       const response = await client.send(command);
       return response;
     } catch (error) {
-        console.log("Error in create traffic distribution group", error)
+      console.log("Error in create traffic distribution group", error);
       throw error;
     }
   }
@@ -165,6 +166,18 @@ async function describeTrafficDistributionGroup(id) {
       TrafficDistributionGroupId: id,
     });
     const response = await client.send(command);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateTrafficDistribution(data) {
+  try {
+    console.log("Data:::", data)
+    const command = new UpdateTrafficDistributionCommand(data);
+    const response = await client.send(command);
+    console.log("Response::::: ", response)
     return response;
   } catch (error) {
     throw error;
@@ -202,24 +215,29 @@ async function disaster(data) {
       response.replicateInstance = replicaResponse;
 
       if (eventBody?.trafficDistributionGroup && replicaResponse?.Id) {
-        const trafficDistributionGroupInput = eventBody.trafficDistributionGroup;
+        const trafficDistributionGroupInput =
+          eventBody.trafficDistributionGroup;
         trafficDistributionGroupInput.InstanceId = replicaResponse.Id;
 
-        const trafficDistributionGroupReponse = await createTrafficDistributionGroup(trafficDistributionGroupInput);
-        
+        const trafficDistributionGroupReponse =
+          await createTrafficDistributionGroup(trafficDistributionGroupInput);
+
         response.trafficDistributionGroup = {
           Arn: trafficDistributionGroupReponse.Arn,
-          Id: trafficDistributionGroupReponse.Id
+          Id: trafficDistributionGroupReponse.Id,
         };
 
         if (
           eventBody?.claimPhoneNumber &&
           trafficDistributionGroupReponse?.$metadata?.httpStatusCode === 200
         ) {
+          const describeTrafficGroupResponse =
+            await describeTrafficDistributionGroup(
+              trafficDistributionGroupReponse.Id
+            );
 
-          const describeTrafficGroupResponse = await describeTrafficDistributionGroup(trafficDistributionGroupReponse.Id);
-          
-          response.describeTrafficDistributionGroup = describeTrafficGroupResponse?.TrafficDistributionGroup;
+          response.describeTrafficDistributionGroup =
+            describeTrafficGroupResponse?.TrafficDistributionGroup;
 
           if (
             describeTrafficGroupResponse?.$metadata?.httpStatusCode === 200 &&
@@ -230,14 +248,14 @@ async function disaster(data) {
             const claimPhoneNoInput = eventBody.claimPhoneNumber;
             claimPhoneNoInput.InstanceId = replicaResponse.Id;
 
-            // const claimPhoneNoResponse = await claimPhoneNumber(
-            //   claimPhoneNoInput
-            // );
+            const claimPhoneNoResponse = await claimPhoneNumber(
+              claimPhoneNoInput
+            );
 
-            // response.claimPhoneNumber = claimPhoneNoResponse;
-            
+            response.claimPhoneNumber = claimPhoneNoResponse;
           } else {
-            response.message = "Traffic distribution group creation in progress";
+            response.message =
+              "Traffic distribution group creation in progress";
           }
         }
       }

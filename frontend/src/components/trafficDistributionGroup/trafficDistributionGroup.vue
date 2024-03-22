@@ -63,17 +63,18 @@ export default {
                         console.log("Tagssasss", tag)
                         tagsObject[`tag${index + 1}`] = tag;
                     });
-                    const InstanceId = localStorage.getItem("InstanceId");
+                    // const InstanceId = localStorage.getItem("InstanceId");
+                    const InstanceId = "0d76ac91-2340-4a4b-bcc5-6b9914c61236";
                     const payload = {
                         InstanceId: InstanceId,
                         Name: this.name,
                         Tags: tagsObject
                     }
                     const response = await this.createTrafficDistributionGroup(payload);
-                    console.log("ASSSSS", response);
-                    this.isLoading = true;
-                    this.createdMessage = 'Traffic Distribution is created successfully!'
-                    console.log('Form submitted');
+                    if (response.$metadata.httpStatusCode === 200) {
+                        this.isLoading = false;
+                        this.createdMessage = 'Traffic Distribution is created successfully!'
+                    }
                 } else {
                     console.log('Form validation failed');
                 }

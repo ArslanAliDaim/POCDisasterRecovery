@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapState } from 'vuex';
 export default {
     name: 'HomePage',
     computed: {
@@ -35,7 +35,6 @@ export default {
         console.log()
     },
     methods: {
-        ...mapActions(['fetchDataAction']),
         handleLogin() {
             const url = 'https://dextr-disaster-recovery-poc.my.connect.aws/connect/ccp-v2#/';
             const title = 'ConnectPath - connectpathdev-dextr-disaster-recovery-poc'
@@ -60,17 +59,6 @@ export default {
             let top = height / 2 - h / 2 + dualScreenTop;
             window.globalWindow = window.open(url, title, `toolbar=no, width=400, height=573, top=${top}, left=${left}`);
         },
-        async fetchData() {
-            const body = {
-                key1: "Key 1",
-                key2: "Key 2"
-            };
-            const params = {
-                params1: "Params 1",
-                params2: "Params 2"
-            }
-            await this.fetchDataAction({ body, params });
-        }
     }
 }
 </script>

@@ -9,14 +9,16 @@ const store = createStore({
       body: {},
       params: {},
       phoneNumberList: [],
+      trafficDistributionGroup: [],
+      isAuthenticated: true,
     };
   },
   mutations: {
-    increment(state) {
-      state.count++;
+    login(state) {
+      state.isAuthenticated = true;
     },
-    decrement(state) {
-      state.count--;
+    logout(state) {
+      state.isAuthenticated = false;
     },
     setResponseData(state, payload) {
       state.body = payload.body;
@@ -25,20 +27,11 @@ const store = createStore({
     setPhoneNumebrList(state, payload) {
       state.phoneNumberList = payload;
     },
+    setTrafficDistribitionGroups(state, payload) {
+      state.trafficDistributionGroup = payload;
+    },
   },
   actions: {
-    increment(context) {
-      context.commit("increment");
-    },
-    decrement(context) {
-      context.commit("decrement");
-    },
-    async fetchDataAction(context, payload) {
-      const url = `https://ibs44jxyzz3ky6grrfeerdloo40xnykn.lambda-url.ap-southeast-1.on.aws/?params3=params3&params4=params4`;
-      const response = await axios.post(url, payload.body);
-      context.commit("setResponseData", response.data);
-      return response.data;
-    },
     async availablePhoneNumberAction(context, payload) {
       try {
         const endpoint = `${URL}phone-number/available-phone-no?countryCode=${payload.countryCode}&type=${payload.type}&InstanceId=${payload.InstanceId}`;
@@ -55,9 +48,14 @@ const store = createStore({
     },
     async replicateInstance(context, payload) {
       try {
-        const endpoint = `${URL}poc`;
-        const response = await axios.post(endpoint, payload);
-        return response;
+        // const endpoint = `${URL}poc`;
+        const endpoint = `${URL}disaster`;
+        const response = await axios.post(endpoint, payload, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        return response.data;
       } catch (error) {
         console.log("Error::::: ", error);
         throw error;
@@ -67,7 +65,18 @@ const store = createStore({
       try {
         const endpoint = `${URL}poc/${payload.InstanceId}`;
         const response = await axios.post(endpoint, payload);
-        return response;
+        console.log("AASSSS", response);
+        return response.data;
+      } catch (error) {
+        console.log("Error::::: ", error);
+        throw error;
+      }
+    },
+    async listTrafficDistributionGroup(context, payload) {
+      try {
+        const endpoint = `${URL}poc/${payload.InstanceId}`;
+        const response = await axios.get(endpoint);
+        return response.data;
       } catch (error) {
         console.log("Error::::: ", error);
         throw error;
@@ -83,11 +92,23 @@ const store = createStore({
         throw error;
       }
     },
+    login({ commit }) {
+      // Simulate login process
+      commit("login");
+    },
+    logout({ commit }) {
+      // Simulate logout process
+      commit("logout");
+    },
   },
   getters: {
     getCount(state) {
       return state.count;
     },
+    getListTrafficDistributionGroups(state) {
+      return state.trafficDistributionGroup;
+    },
+    isAuthenticated: (state) => state.isAuthenticated,
   },
 });
 
