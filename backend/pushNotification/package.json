@@ -1,0 +1,10 @@
+{
+  "name": "pushNotification",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-sns": "^3.540.0",
+    "uuidv4": "^6.2.13"
+  }
+}

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createStore } from "vuex";
 let URL = "https://2762wbpq92.execute-api.us-west-2.amazonaws.com/poc/";
+let URL_PUSH_NOTIFICATION =
+  "https://tiyz6janl5.execute-api.ap-southeast-1.amazonaws.com/dev/";
 
 const store = createStore({
   state() {
@@ -99,6 +101,17 @@ const store = createStore({
     logout({ commit }) {
       // Simulate logout process
       commit("logout");
+    },
+    async registerDeviceForPushNotification(context, payload) {
+      try {
+        console.log("Payload::: ", payload)
+        const endpoint = `${URL_PUSH_NOTIFICATION}device-token`;
+        const response = await axios.post(endpoint, payload);
+        return response;
+      } catch (error) {
+        console.log("Error::::: ", error);
+        throw error;
+      }
     },
   },
   getters: {
